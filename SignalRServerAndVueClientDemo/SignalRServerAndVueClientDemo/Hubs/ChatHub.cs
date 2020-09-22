@@ -50,7 +50,6 @@ namespace SignalRServerAndVueClientDemo.Hubs
         {
             var id = Context.ConnectionId;
             _logger.Info($"客户端ConnectionId：【{id}】已连接服务器！");
-            _logger.Debug($"客户端ConnectionId：【{id}】已连接服务器！");
             return base.OnConnectedAsync();
         }
         /// <summary>
