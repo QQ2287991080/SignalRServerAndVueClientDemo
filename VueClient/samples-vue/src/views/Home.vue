@@ -7,6 +7,7 @@
     <button @click="sendOwn">对自己发送</button>
     <button @click="sendClient">系统发送消息</button>
     <button @click="getLog">获取系统日志</button>
+    <button @click="sendErr">错误</button>
 
     <div>
       <ul v-for="(item ,index) in messages" v-bind:key="index +'itemMessage'">
@@ -31,6 +32,7 @@ export default {
       message: "", //消息
       connection: "", //signalr连接
       messages: [], //返回消息
+      tableData: [],
     };
   },
   methods: {
@@ -56,13 +58,27 @@ export default {
         console.log(resp);
       });
     },
+
     //获取系统日志
     getLog: function () {
-      this.$http
-        .get("http://localhost:13989/api/test/getLogMessage")
-        .then((res) => {
-          console.log(res);
+      // this.$http
+      //   .get("http://localhost:13989/chathub/GetLogMessage", {
+      //     params: { message: "" },
+      //   })
+      //   .then((res) => {
+      //     console.log(res);
+      //   });
+      this.connection
+        .invoke("GetLogMessage", this.message)
+        .catch(function (err) {
+          // return console.error(err);
         });
+    },
+    //发出一个错误
+    sendErr: function () {
+      this.$http.get("http://localhost:13989/api/test/getLog").then((resp) => {
+        console.log(resp);
+      });
     },
   },
   created: function () {
@@ -76,12 +92,15 @@ export default {
       .build();
     this.connection.on("ReceiveMessage", function (user, message) {
       thisVue.messages.push({ user, message });
-      console.log({ user, message });
+      //console.log({ user, message });
     });
     this.connection.on("ReceiveCaller", function (message) {
       let user = "自己"; //这里为了push不报错，我就弄了一个默认值。
       thisVue.messages.push({ user, message });
-      console.log({ user, message });
+      //console.log({ user, message });
+    });
+    this.connection.on("ReceiveLog", function (message) {
+      console.log({ message });
     });
     this.connection.start();
   },

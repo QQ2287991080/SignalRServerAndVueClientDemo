@@ -1,8 +1,10 @@
 ﻿using log4net;
 using log4net.Core;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 namespace SignalRServerAndVueClientDemo.Hubs
 {
 
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatClient>
     {
         static ILog _logger = LogManager.GetLogger(Startup.Logger.Name, typeof(ChatHub));
         public ChatHub()
@@ -30,7 +32,7 @@ namespace SignalRServerAndVueClientDemo.Hubs
             //{ 
               
             //}
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Clients.All.ReceiveMessage(user, message);
         }
         /// <summary>
         /// 向调用客户端发送消息
@@ -39,7 +41,7 @@ namespace SignalRServerAndVueClientDemo.Hubs
         /// <returns></returns>
         public async Task SendMessageCaller(string message)
         {
-            await Clients.Caller.SendAsync("ReceiveCaller", message);
+            await Clients.Caller.ReceiveCaller( message);
         }
 
         /// <summary>
@@ -64,5 +66,27 @@ namespace SignalRServerAndVueClientDemo.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
+        public async Task GetLogMessage(string message)
+        {
+            var basePath = Directory.GetCurrentDirectory() + "\\logs\\system.log";
+            var fs = new FileStream(basePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var reader = new StreamReader(fs);
+            var json = reader.ReadToEnd();
+            var str = json.Replace("\r\n", "").Replace("|", "\"");
+            int length = str.Length;
+            var sub = str.Remove(length - 1);
+            var result = "[" + sub + "]";
+            var data = JsonConvert.DeserializeObject<List<LogData>>(result);
+            await Clients.All.ReceiveMessage(data);
+        }
+       
+
+    }
+    public class LogData
+    {
+        public string CreateTime { get; set; }
+        public string ThreadId { get; set; }
+        public string LogLevel { get; set; }
+        public string Summary { get; set; }
     }
 }

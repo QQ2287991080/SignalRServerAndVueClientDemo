@@ -34,6 +34,13 @@ namespace SignalRServerAndVueClientDemo.Controllers
             return 0;
         }
 
+        [HttpGet]
+        public async Task<int> GetLog()
+        {
+            int a = 0;
+            var b = 1/a;
+            return 0;
+        }
 
         [HttpGet]
         public  JsonResult GetLogMessage()
@@ -42,8 +49,6 @@ namespace SignalRServerAndVueClientDemo.Controllers
             {
                 var basePath = Directory.GetCurrentDirectory() + "\\logs\\system.log";
                 var fs = new FileStream(basePath, FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
-
-
                 var reader = new StreamReader(fs);
                 var json = reader.ReadToEnd();
                 var str = json.Replace("\r\n", "").Replace("|", "\"");

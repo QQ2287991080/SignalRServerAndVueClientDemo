@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SignalRServerAndVueClientDemo.Filters;
 using SignalRServerAndVueClientDemo.Hubs;
 
 namespace SignalRServerAndVueClientDemo
@@ -35,8 +36,13 @@ namespace SignalRServerAndVueClientDemo
         {
             //ÆôÓÃ¿ØÖÆÆ÷
             services.AddControllers();
+            services.AddMvc(option =>
+            {
+                option.Filters.Add(typeof(SysExceptionFilter));
+                //option.EnableEndpointRouting = false;
+            });
             services.AddRazorPages();
-            services.AddSignalR();
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
             //ÅäÖÃ¿çÓò
             services.AddCors(c =>
                 c.AddPolicy("AllowAll", p =>
@@ -49,7 +55,7 @@ namespace SignalRServerAndVueClientDemo
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,LoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -59,12 +65,14 @@ namespace SignalRServerAndVueClientDemo
             {
                 app.UseExceptionHandler("/Error");
             }
-            //loggerFactory.AddLog4Net();
+            //log4 extension
+            loggerFactory.AddLog4Net();
+
             app.UseStaticFiles();
+            
             //ÅäÖÃ¿çÓò
             app.UseCors("AllowAll");
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
