@@ -24,6 +24,9 @@ namespace SignalRServerAndVueClientDemo
                    {
                        webBuilder.UseStartup<Startup>();
                    });
+                   //.ConfigureLogging(log=> {
+                   //    log.AddLog4Net();
+                   //});
 
             return builder;
         }
