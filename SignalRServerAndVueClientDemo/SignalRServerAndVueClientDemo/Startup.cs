@@ -13,8 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SignalRServerAndVueClientDemo.Filters;
 using SignalRServerAndVueClientDemo.Hubs;
+using SignalRServerAndVueClientDemo.LogHelper;
 
 namespace SignalRServerAndVueClientDemo
 {
@@ -44,7 +46,14 @@ namespace SignalRServerAndVueClientDemo
                 //option.EnableEndpointRouting = false;
             });
             services.AddRazorPages();
-            services.AddSignalR().AddNewtonsoftJsonProtocol();
+            services.AddSignalR().AddNewtonsoftJsonProtocol(cfg=>
+            {
+                var settings = cfg.PayloadSerializerSettings;
+                // ±º‰∏Ò Ω
+                settings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                //∫ˆ¬‘—≠ª∑“˝”√
+                settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             //≈‰÷√øÁ”Ú
             services.AddCors(c =>
                 c.AddPolicy("AllowAll", p =>
@@ -70,33 +79,12 @@ namespace SignalRServerAndVueClientDemo
             //log4 extension
            // loggerFactory.AddLog4Net();
 
-            _logger.Info("Startpup");
-            _logger.Info("Startpup2");
+            //_logger.Info("Startpup");
+            //_logger.Info("Startpup2");
 
-            {
-                var basePath = Directory.GetCurrentDirectory() + "\\logs\\system.log";
-                var fs = new FileStream(basePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                var reader = new StreamReader(fs);
-                var json = reader.ReadToEnd();
-                reader.Close();
-                fs.Close();
-                //File.Delete(basePath);
-                var str = json.Replace("\r\n", "");
-                var arr = str.Split('|');
-                var arr2 = arr.Where(w => !string.IsNullOrEmpty(w));
-                foreach (var item in arr2)
-                {
-                    var first = item.Split(',');
-                    LogResut resut = new LogResut();
-                    var xx = first[0].Split('£∫')[1];
-                    resut.CreateTime = Convert.ToDateTime(first[0].Split('£∫')[1]);
-                    resut.Level = first[2].Split('£∫')[1];
-                    resut.Summary = first[3].Split('£∫')[1];
-                }
-                int length = str.Length;
-                var sub = str.Remove(length - 1);
-                var result = "[" + sub + "]";
-            }
+            //{
+            //    var data = ReadHelper.Read();
+            //}
             app.UseStaticFiles();
             
             //≈‰÷√øÁ”Ú
@@ -111,14 +99,9 @@ namespace SignalRServerAndVueClientDemo
                                name: "default",
                                pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                //endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }
-    public class LogResut
-    {
-        public DateTime CreateTime { get; set; }
-        public string Level { get; set; }
-        public string Summary { get; set; }
-    }
+    
 }

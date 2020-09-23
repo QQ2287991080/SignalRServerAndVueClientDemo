@@ -6,8 +6,8 @@
     <button @click="sendAll">发送全部</button>
     <button @click="sendOwn">对自己发送</button>
     <button @click="sendClient">系统发送消息</button>
-    <button @click="getLog">获取系统日志</button>
-    <button @click="sendErr">错误</button>
+    <!-- <button @click="getLog">获取系统日志</button>
+    <button @click="sendErr">错误</button>-->
 
     <div>
       <ul v-for="(item ,index) in messages" v-bind:key="index +'itemMessage'">

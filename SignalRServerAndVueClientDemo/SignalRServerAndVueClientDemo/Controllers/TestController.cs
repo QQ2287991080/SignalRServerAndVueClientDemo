@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SignalRServerAndVueClientDemo.Hubs;
+using SignalRServerAndVueClientDemo.LogHelper;
 
 namespace SignalRServerAndVueClientDemo.Controllers
 {
@@ -43,25 +44,11 @@ namespace SignalRServerAndVueClientDemo.Controllers
         }
 
         [HttpGet]
-        public  JsonResult GetLogMessage()
+        public  async Task<JsonResult> GetLogMessage()
         {
-            try
-            {
-                var basePath = Directory.GetCurrentDirectory() + "\\logs\\system.log";
-                var fs = new FileStream(basePath, FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
-                var reader = new StreamReader(fs);
-                var json = reader.ReadToEnd();
-                var str = json.Replace("\r\n", "").Replace("|", "\"");
-                int length = str.Length;
-                var sub = str.Remove(length-1);
-                var result = "[" + sub + "]";
-                var data = JsonConvert.DeserializeObject<List<LogData>>(result);
-                return new JsonResult(data);
-            }
-            catch (HubException ex)
-            {
-                return new JsonResult(ex);
-            }
+            var data = ReadHelper.Read();
+            await _hubContext.Clients.All.SendAsync("ReceiveLog", data);
+            return new JsonResult(0);
         }
     }
 

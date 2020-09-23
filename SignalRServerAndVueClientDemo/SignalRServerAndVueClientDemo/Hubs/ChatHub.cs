@@ -51,7 +51,7 @@ namespace SignalRServerAndVueClientDemo.Hubs
         public override Task OnConnectedAsync()
         {
             var id = Context.ConnectionId;
-            _logger.Info($"客户端ConnectionId：【{id}】已连接服务器！");
+            //_logger.Info($"客户端ConnectionId=>【{id}】已连接服务器！");
             return base.OnConnectedAsync();
         }
         /// <summary>
@@ -62,7 +62,7 @@ namespace SignalRServerAndVueClientDemo.Hubs
         public override Task OnDisconnectedAsync(Exception exception)
         {
             var id = Context.ConnectionId;
-            _logger.Info($"客户端ConnectionId：【{id}】已断开服务器连接！");
+            //_logger.Info($"客户端ConnectionId=>【{id}】已断开服务器连接！");
             return base.OnDisconnectedAsync(exception);
         }
 
