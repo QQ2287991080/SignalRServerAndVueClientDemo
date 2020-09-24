@@ -2,8 +2,9 @@
 
 项目包含了 signalR 服务端、vue-cli 客户端。  
 asp.net core signalR 具体内容请到官网了解  
-https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-3.1
-
+https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-3.1  
+## 该系列博客地址：
+https://www.cnblogs.com/aqgy12138/p/13719851.html
 ## 使用
 
 `git clone`
