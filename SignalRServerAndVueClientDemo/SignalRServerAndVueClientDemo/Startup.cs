@@ -27,7 +27,7 @@ namespace SignalRServerAndVueClientDemo
             Configuration = configuration;
             Logger = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
             XmlConfigurator.Configure(Logger, new FileInfo("log4net.config"));
-            _logger = LogManager.GetLogger(Logger.Name, typeof(Startup));
+           // _logger = LogManager.GetLogger(Logger.Name, typeof(Startup));
         }
 
         public static ILoggerRepository Logger { get; set; }
@@ -42,6 +42,7 @@ namespace SignalRServerAndVueClientDemo
             services.AddControllers();
             services.AddMvc(option =>
             {
+                //Ìí¼Ó´íÎó²¶»ñ
                 option.Filters.Add(typeof(SysExceptionFilter));
                 //option.EnableEndpointRouting = false;
             });

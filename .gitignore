@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/SignalRServerAndVueClientDemo/SignalRServerAndVueClientDemo/logs/system.log.2020-09-23
